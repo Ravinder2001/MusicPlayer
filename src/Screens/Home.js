@@ -14,17 +14,61 @@ import React, {useEffect, useState, useRef} from 'react';
 import songs from '../data';
 import Icon from 'react-native-vector-icons/Ionicons';
 const {width, height} = Dimensions.get('window');
+import TrackPlayer, {
+  Capability,
+  Event,
+  RepeatMode,
+  State,
+  usePlaybackState,
+  useProgress,
+  useTrackPlayerEvents,
+} from 'react-native-track-player';
+const setupPlayer = async () => {
+  try {
+    await TrackPlayer.setupPlayer({});
+    await TrackPlayer.updateOptions({
+      capabilities: [
+        Capability.Play,
+        Capability.Pause,
+        Capability.SkipToNext,
+        Capability.SkipToPrevious,
+        Capability.Stop,
+      ],
+    });
+    await TrackPlayer.add(songs);
+  } catch (error) {
+    console.log(error);
+  }
+};
+const togglePlayBack = async playBackState => {
+  const currentTrack = await TrackPlayer.getCurrentTrack();
+  console.log(currentTrack, playBackState, State.Playing);
+  console.log(State.Paused);
+  if (currentTrack != null) {
+    if (playBackState % 2 == 1) {
+      await TrackPlayer.play();
+    } else if (playBackState % 2==0) {
+      await TrackPlayer.pause();
+    } else {
+      await TrackPlayer.pause();
+    }
+  }
+};
 const Home = () => {
+  const playBackState = usePlaybackState();
+
   const [songIndex, setSongIndex] = useState(0);
   const scrollX = useRef(new Animated.Value(0)).current;
   const songSlider = useRef(null);
   useEffect(() => {
+    setupPlayer();
     scrollX.addListener(({value}) => {
       const index = Math.round(value / width);
       setSongIndex(index);
     });
     return () => {
       scrollX.removeAllListeners();
+      TrackPlayer.destroy();
     };
   }, []);
   const skipForward = () => {
@@ -46,6 +90,7 @@ const Home = () => {
       </Animated.View>
     );
   }
+
   return (
     <SafeAreaView style={styles.main_container}>
       <View style={styles.container}>
@@ -93,13 +138,34 @@ const Home = () => {
         </View>
         <View style={styles.music_control}>
           <TouchableOpacity onPress={skipBackward}>
-            <Icon name="play-skip-back-outline" size={50} color="red" style={{marginTop:15}} />
+            <Icon
+              name="play-skip-back-outline"
+              size={50}
+              color="red"
+              style={{marginTop: 15}}
+            />
           </TouchableOpacity>
-          <TouchableOpacity>
-            <Icon name="ios-pause-circle-outline" size={80} color="red" />
+          <TouchableOpacity
+            onPress={() => {
+              togglePlayBack(playBackState);
+            }}>
+            <Icon
+              name={
+                playBackState == State.Playing
+                  ? 'pause-circle-outline'
+                  : 'play-circle-outline'
+              }
+              size={80}
+              color="red"
+            />
           </TouchableOpacity>
           <TouchableOpacity onPress={skipForward}>
-            <Icon name="play-skip-forward-outline" size={50} color="red" style={{marginTop:15}} />
+            <Icon
+              name="play-skip-forward-outline"
+              size={50}
+              color="red"
+              style={{marginTop: 15}}
+            />
           </TouchableOpacity>
         </View>
       </View>
