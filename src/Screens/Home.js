@@ -40,14 +40,15 @@ const setupPlayer = async () => {
     console.log(error);
   }
 };
+var count=0
 const togglePlayBack = async playBackState => {
+  count++
   const currentTrack = await TrackPlayer.getCurrentTrack();
-  console.log(currentTrack, playBackState, State.Playing);
-  console.log(State.Paused);
+  console.log('here');
   if (currentTrack != null) {
     if (playBackState % 2 == 1) {
       await TrackPlayer.play();
-    } else if (playBackState % 2==0) {
+    } else if (playBackState % 2 == 0) {
       await TrackPlayer.pause();
     } else {
       await TrackPlayer.pause();
@@ -56,31 +57,50 @@ const togglePlayBack = async playBackState => {
 };
 const Home = () => {
   const playBackState = usePlaybackState();
-
+  const progress = useProgress();
   const [songIndex, setSongIndex] = useState(0);
   const scrollX = useRef(new Animated.Value(0)).current;
   const songSlider = useRef(null);
+  const skipto = async trackId => {
+    await TrackPlayer.skip(trackId);
+  };
+
   useEffect(() => {
     setupPlayer();
-    scrollX.addListener(({value}) => {
+    scrollX.addListener(async ({value}) => {
       const index = Math.round(value / width);
+      skipto(index);
       setSongIndex(index);
+      setTimeout(async () => {
+        if(count>0){
+          await TrackPlayer.play();
+        }else{
+          await TrackPlayer.pause();
+        }
+      }, 400);
     });
     return () => {
       scrollX.removeAllListeners();
-      TrackPlayer.destroy();
+      // TrackPlayer.destroy();
     };
   }, []);
   const skipForward = () => {
     songSlider.current.scrollToOffset({
       offset: (songIndex + 1) * width,
     });
+    // setTimeout(async () => {
+    //   await TrackPlayer.play();
+    // }, 400);
   };
   const skipBackward = () => {
     songSlider.current.scrollToOffset({
       offset: (songIndex - 1) * width,
     });
+    // setTimeout(async () => {
+    //   await TrackPlayer.play();
+    // }, 400);
   };
+  // console.log(progress.position)
   function renderSongs({index, item}) {
     return (
       <Animated.View style={styles.flatlist}>
@@ -123,18 +143,26 @@ const Home = () => {
         <View>
           <Slider
             style={styles.slider}
-            value={10}
+            value={progress.position}
             minimumValue={0}
-            maximumValue={100}
+            maximumValue={progress.duration}
             thumbTintColor="red"
             minimumTrackTintColor="red"
             maximumTrackTintColor="gray"
-            onSlidingComplete={() => {}}
+            onSlidingComplete={async value => {
+              await TrackPlayer.seekTo(value);
+            }}
           />
         </View>
         <View style={styles.song_time}>
-          <Text style={styles.time_text}>0:00</Text>
-          <Text style={styles.time_text}>3:55</Text>
+          <Text style={styles.time_text}>
+            {new Date(progress.position * 1000).toISOString().substr(14, 5)}
+          </Text>
+          <Text style={styles.time_text}>
+            {new Date((progress.duration - progress.position) * 1000)
+              .toISOString()
+              .substr(14, 5)}
+          </Text>
         </View>
         <View style={styles.music_control}>
           <TouchableOpacity onPress={skipBackward}>
