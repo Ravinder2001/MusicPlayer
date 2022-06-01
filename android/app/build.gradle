@@ -277,7 +277,7 @@ dependencies {
     implementation "com.facebook.react:react-native:+"  // From node_modules
 
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
-implementation 'com.airbnb.android:lottie-compose:5.0.3'
+implementation 'com.airbnb.android:lottie-compose:5.0.3'//for duplicate error
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
         exclude group:'com.facebook.fbjni'
     }
