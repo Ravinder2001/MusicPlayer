@@ -13,6 +13,7 @@ import Slider from '@react-native-community/slider';
 import React, {useEffect, useState, useRef} from 'react';
 import songs from '../data';
 import Icon from 'react-native-vector-icons/Ionicons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 const {width, height} = Dimensions.get('window');
 import TrackPlayer, {
   Capability,
@@ -40,9 +41,9 @@ const setupPlayer = async () => {
     console.log(error);
   }
 };
-var count=0
+var count = 0;
 const togglePlayBack = async playBackState => {
-  count++
+  count++;
   const currentTrack = await TrackPlayer.getCurrentTrack();
   console.log('here');
   if (currentTrack != null) {
@@ -64,7 +65,33 @@ const Home = () => {
   const skipto = async trackId => {
     await TrackPlayer.skip(trackId);
   };
+  const [repeat, setRepeat] = useState('off');
+  const repeatIcon = () => {
+    if (repeat == 'off') {
+      return 'repeat-off';
+    }
+    if (repeat == 'track') {
+      return 'repeat-once';
+    }
+    if (repeat == 'repeat') {
+      return 'repeat';
+    }
+  };
+  const repeatMode = () => {
+    if (repeat == 'off') {
+      TrackPlayer.setRepeatMode(RepeatMode.Track)
+      setRepeat('track');
+    }
+    if (repeat == 'track') {
+      TrackPlayer.setRepeatMode(RepeatMode.Queue)
+      setRepeat('repeat');
 
+    }
+    if (repeat == 'repeat') {
+      TrackPlayer.setRepeatMode(RepeatMode.Off)
+      setRepeat('off');
+    }
+  };
   useEffect(() => {
     setupPlayer();
     scrollX.addListener(async ({value}) => {
@@ -72,9 +99,9 @@ const Home = () => {
       skipto(index);
       setSongIndex(index);
       setTimeout(async () => {
-        if(count>0){
+        if (count > 0) {
           await TrackPlayer.play();
-        }else{
+        } else {
           await TrackPlayer.pause();
         }
       }, 400);
@@ -202,8 +229,8 @@ const Home = () => {
           <TouchableOpacity onPress={() => {}}>
             <Icon name="heart-outline" size={30} color="white" />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => {}}>
-            <Icon name="repeat" size={30} color="white" />
+          <TouchableOpacity onPress={() => {repeatMode()}}>
+            <MaterialCommunityIcons name={`${repeatIcon()}`} size={30} color="white" />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => {}}>
             <Icon name="share-outline" size={30} color="white" />
