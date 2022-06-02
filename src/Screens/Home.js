@@ -10,12 +10,13 @@ const Home = () => {
       <View style={styles.container}>
         {/* <MusicPlayer /> */}
         <Button title="show sheet" onPress={() => setShow(true)} />
-        <BottomSheet
+        < 
           show={show}
           onDismiss={() => {
             setShow(false);
           }}
           enableBackdropDismiss
+          MusicPlayer={MusicPlayer}
         />
       </View>
     </Provider>

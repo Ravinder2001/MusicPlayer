@@ -10,14 +10,16 @@ import {
 import React, {useRef, useEffect} from 'react';
 import {Portal} from 'react-native-paper';
 import {useState} from 'react';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {
   PanGestureHandler,
   GestureHandlerRootView,
 } from 'react-native-gesture-handler';
-const BottomSheet = ({show, onDismiss, enableBackdropDismiss}) => {
-  const bottomSheetHeight = Dimensions.get('window').height * 0.5;
+const BottomSheet = ({show, onDismiss, enableBackdropDismiss, MusicPlayer}) => {
+  const bottomSheetHeight = Dimensions.get('window').height - 100;
   const deviceWidth = Dimensions.get('window').width;
   const bottom = useRef(new Animated.Value(-bottomSheetHeight)).current;
+  console.log(bottom);
   const [open, setOpen] = useState(show);
   const onGesture = event => {
     if (event.nativeEvent.translationY > 0) {
@@ -54,52 +56,31 @@ const BottomSheet = ({show, onDismiss, enableBackdropDismiss}) => {
   }
   return (
     <Portal>
-      <Pressable
-        onPress={enableBackdropDismiss ? onDismiss : undefined}
-        style={styles.backdrop}
-      />
+      <GestureHandlerRootView style={{flex: 1}}>
+        <Pressable
+          onPress={enableBackdropDismiss ? onDismiss : undefined}
+          style={styles.backdrop}
+        />
 
-      <Animated.View
-        style={[
-          styles.root,
-          {
-            height: bottomSheetHeight,
-            bottom: bottom,
-            shadowOffset: {
-              height: -3,
+        <Animated.View
+          style={[
+            styles.root,
+            {
+              height: bottomSheetHeight,
+              bottom: bottom,
+              shadowOffset: {
+                height: -3,
+              },
             },
-          },
-          styles.commom,
-        ]}>
-        <GestureHandlerRootView style={{flex: 1}}>
+            styles.commom,
+          ]}>
           <PanGestureHandler onGestureEvent={onGesture} onEnded={onGestureEnd}>
-            <View
-              style={[
-                styles.header,
-                styles.commom,
-                {
-                  shadowOffset: {
-                    height: 3,
-                  },
-                },
-              ]}>
-              <View
-                style={{
-                  width: 60,
-                  height: 3,
-                  borderRadius: 1.5,
-                  position: 'absolute',
-                  top: 8,
-                  left: (deviceWidth - 60) / 2,
-                  zIndex: 10,
-                  backgroundColor: '#ccc',
-                }}
-              />
-              <Text onPress={onDismiss}>Close</Text>
+            <View style={{flex: 1}}>
+              <MusicPlayer onDismiss={onDismiss} />
             </View>
           </PanGestureHandler>
-        </GestureHandlerRootView>
-      </Animated.View>
+        </Animated.View>
+      </GestureHandlerRootView>
     </Portal>
   );
 };
@@ -112,7 +93,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
-    overflow: 'hidden',
+    // overflow: 'hidden',
   },
   header: {
     height: 33,

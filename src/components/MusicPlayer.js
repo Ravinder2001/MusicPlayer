@@ -38,14 +38,14 @@ const setupPlayer = async () => {
     });
     await TrackPlayer.add(songs);
   } catch (error) {
-    console.log(error);
+    console.log("setup=>",error);
   }
 };
 var count = 0;
 const togglePlayBack = async playBackState => {
   count++;
   const currentTrack = await TrackPlayer.getCurrentTrack();
-  console.log('here');
+  
   if (currentTrack != null) {
     if (playBackState % 2 == 1) {
       await TrackPlayer.play();
@@ -56,7 +56,7 @@ const togglePlayBack = async playBackState => {
     }
   }
 };
-const MusicPLayer = () => {
+const MusicPLayer = ({onDismiss}) => {
   const playBackState = usePlaybackState();
   const progress = useProgress();
   const [songIndex, setSongIndex] = useState(0);
@@ -74,6 +74,7 @@ const MusicPLayer = () => {
       setTrackTitle(title);
     }
   });
+  
   const skipto = async trackId => {
     await TrackPlayer.skip(trackId);
   };
@@ -155,6 +156,16 @@ const MusicPLayer = () => {
   return (
     <SafeAreaView style={styles.main_container}>
       <View style={styles.container}>
+        <View style={styles.icon}>
+          <MaterialCommunityIcons
+            onPress={()=>{
+              onDismiss()
+              setupPlayer()
+            }}
+            name="arrow-down-thick"
+            size={30}
+          />
+        </View>
         <Animated.FlatList
           ref={songSlider}
           data={songs}
@@ -237,28 +248,29 @@ const MusicPLayer = () => {
             />
           </TouchableOpacity>
         </View>
-      </View>
-      <View style={styles.bottom}>
-        <View style={styles.bottom_icon}>
-          <TouchableOpacity onPress={() => {}}>
-            <Icon name="heart-outline" size={30} color="white" />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              repeatMode();
-            }}>
-            <MaterialCommunityIcons
-              name={`${repeatIcon()}`}
-              size={30}
-              color="white"
-            />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => {}}>
-            <Icon name="share-outline" size={30} color="white" />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => {}}>
-            <Icon name="reorder-three" size={30} color="white" />
-          </TouchableOpacity>
+
+        <View style={styles.bottom}>
+          <View style={styles.bottom_icon}>
+            <TouchableOpacity onPress={() => {}}>
+              <Icon name="heart-outline" size={30} color="white" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                repeatMode();
+              }}>
+              <MaterialCommunityIcons
+                name={`${repeatIcon()}`}
+                size={30}
+                color="white"
+              />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => {}}>
+              <Icon name="share-outline" size={30} color="white" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => {}}>
+              <Icon name="reorder-three" size={30} color="white" />
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     </SafeAreaView>
@@ -277,7 +289,7 @@ const styles = StyleSheet.create({
   bottom: {
     // borderTopWidth: 1,
     alignItems: 'center',
-    paddingVertical: 15,
+    paddingVertical: 8,
     width: width,
     backgroundColor: 'red',
   },
@@ -288,7 +300,8 @@ const styles = StyleSheet.create({
   },
   song_image: {
     width: 300,
-    height: 300,
+marginTop:20,
+    height: 250,
     borderRadius: 10,
   },
   img_box: {
@@ -330,6 +343,17 @@ const styles = StyleSheet.create({
     width: width,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  icon: {
+    position: 'absolute',
+    padding: 5,
+    backgroundColor: 'white',
+
+    textAlign: 'center',
+    top: -20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 25,
   },
 });
 export default MusicPLayer;
