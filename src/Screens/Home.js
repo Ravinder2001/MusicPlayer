@@ -33,7 +33,7 @@ const setupPlayer = async () => {
         Capability.Pause,
         Capability.SkipToNext,
         Capability.SkipToPrevious,
-        Capability.Stop,
+        // Capability.Stop,
       ],
     });
     await TrackPlayer.add(songs);
@@ -62,6 +62,18 @@ const Home = () => {
   const [songIndex, setSongIndex] = useState(0);
   const scrollX = useRef(new Animated.Value(0)).current;
   const songSlider = useRef(null);
+  const [trackImage, setTrackImage] = useState('');
+  const [trackArtist, setTrackArtist] = useState('');
+  const [tracktitle, setTrackTitle] = useState('');
+  useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
+    if (event.type == Event.PlaybackTrackChanged && event.nextTrack != null) {
+      const track = await TrackPlayer.getTrack(event.nextTrack);
+      const {title, image, artist} = track;
+      setTrackArtist(artist);
+      setTrackImage(image);
+      setTrackTitle(title);
+    }
+  });
   const skipto = async trackId => {
     await TrackPlayer.skip(trackId);
   };
@@ -79,16 +91,15 @@ const Home = () => {
   };
   const repeatMode = () => {
     if (repeat == 'off') {
-      TrackPlayer.setRepeatMode(RepeatMode.Track)
+      TrackPlayer.setRepeatMode(RepeatMode.Track);
       setRepeat('track');
     }
     if (repeat == 'track') {
-      TrackPlayer.setRepeatMode(RepeatMode.Queue)
+      TrackPlayer.setRepeatMode(RepeatMode.Queue);
       setRepeat('repeat');
-
     }
     if (repeat == 'repeat') {
-      TrackPlayer.setRepeatMode(RepeatMode.Off)
+      TrackPlayer.setRepeatMode(RepeatMode.Off);
       setRepeat('off');
     }
   };
@@ -132,7 +143,10 @@ const Home = () => {
     return (
       <Animated.View style={styles.flatlist}>
         <View style={styles.img_box}>
-          <Image source={{uri: item.image}} style={styles.song_image} />
+          <Image
+            source={trackImage ? {uri: trackImage} : null}
+            style={styles.song_image}
+          />
         </View>
       </Animated.View>
     );
@@ -162,10 +176,10 @@ const Home = () => {
           )}
         />
         <View>
-          <Text style={styles.song_name}>{songs[songIndex].title}</Text>
+          <Text style={styles.song_name}>{tracktitle}</Text>
         </View>
         <View>
-          <Text style={styles.artist_name}>{songs[songIndex].artist}</Text>
+          <Text style={styles.artist_name}>{trackArtist}</Text>
         </View>
         <View>
           <Slider
@@ -229,8 +243,15 @@ const Home = () => {
           <TouchableOpacity onPress={() => {}}>
             <Icon name="heart-outline" size={30} color="white" />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => {repeatMode()}}>
-            <MaterialCommunityIcons name={`${repeatIcon()}`} size={30} color="white" />
+          <TouchableOpacity
+            onPress={() => {
+              repeatMode();
+            }}>
+            <MaterialCommunityIcons
+              name={`${repeatIcon()}`}
+              size={30}
+              color="white"
+            />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => {}}>
             <Icon name="share-outline" size={30} color="white" />
