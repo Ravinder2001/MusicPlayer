@@ -1,11 +1,18 @@
 import {View, StyleSheet} from 'react-native';
 import React from 'react';
 import MusicPlayer from '../components/MusicPlayer';
+import {NavigationContainer} from '@react-navigation/native';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 const Home = () => {
+  const Tab = createBottomTabNavigator();
   return (
-    <View style={styles.container}>
-      <MusicPlayer />
-    </View>
+    <NavigationContainer>
+      {/* <View style={styles.container}> */}
+        <Tab.Navigator>
+          <Tab.Screen name="MusicPlayer" component={MusicPlayer} />
+        </Tab.Navigator>
+      {/* </View> */}
+    </NavigationContainer>
   );
 };
 const styles = StyleSheet.create({
