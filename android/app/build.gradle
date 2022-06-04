@@ -275,7 +275,7 @@ dependencies {
 
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
-
+implementation project(':react-native-linear-gradient')
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
 implementation 'com.airbnb.android:lottie-compose:5.0.3'//for duplicate error
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
