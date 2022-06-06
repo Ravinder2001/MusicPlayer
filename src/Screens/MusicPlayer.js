@@ -181,19 +181,23 @@ const MusicPlayer = () => {
         <View>
           <Text style={styles.artist_name}>{trackArtist}</Text>
         </View>
-        <TouchableOpacity
-          onPress={() => {
-            repeatMode();
-          }}>
-          <MaterialCommunityIcons
-            name={`${repeatIcon()}`}
-            size={30}
-            color="red"
-          />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => {}}>
-          <Icon name="heart-outline" size={30} color="red" />
-        </TouchableOpacity>
+        <View>
+          <TouchableOpacity
+            onPress={() => {
+              repeatMode();
+            }}>
+            <MaterialCommunityIcons
+              name={`${repeatIcon()}`}
+              size={30}
+              color="red"
+            />
+          </TouchableOpacity>
+        </View>
+        <View>
+          <TouchableOpacity onPress={() => {}}>
+            <Icon name="heart-outline" size={30} color="red" />
+          </TouchableOpacity>
+        </View>
         <View>
           <Slider
             style={styles.slider}
