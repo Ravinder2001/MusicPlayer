@@ -8,14 +8,13 @@ import Settings from '../Screens/Settings';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
-import LinearGradient from 'react-native-linear-gradient';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 const Navigations = () => {
   const Tab = createBottomTabNavigator();
   return (
     <NavigationContainer>
       <Tab.Navigator
-        initialRouteName="MusicPlayer"
+        initialRouteName="Search"
         screenOptions={{
           tabBarStyle: {
             backgroundColor: '#030A5C',
@@ -27,11 +26,7 @@ const Navigations = () => {
             headerShown: false,
             tabBarIcon: ({focused}) => (
               <View style={focused ? styles.focusIcon : styles.unFocusIcon}>
-                <Icon
-                  name="search"
-                  size={35}
-                  style={{color:  'white'}}
-                />
+                <Icon name="search" size={35} style={{color: 'white'}} />
               </View>
             ),
           }}
@@ -47,7 +42,7 @@ const Navigations = () => {
                 <MaterialCommunityIcons
                   name="playlist-music"
                   size={35}
-                  style={{color:  'white'}}
+                  style={{color: 'white'}}
                 />
               </View>
             ),
@@ -61,11 +56,7 @@ const Navigations = () => {
             headerShown: false,
             tabBarIcon: ({focused}) => (
               <View style={focused ? styles.focusIcon : styles.unFocusIcon}>
-                <Icon
-                  name="musical-note"
-                  size={35}
-                  style={{color:  'white'}}
-                />
+                <Icon name="musical-note" size={35} style={{color: 'white'}} />
               </View>
             ),
           }}
@@ -78,11 +69,7 @@ const Navigations = () => {
             headerShown: false,
             tabBarIcon: ({focused}) => (
               <View style={focused ? styles.focusIcon : styles.unFocusIcon}>
-                <Icon
-                  name="heart-sharp"
-                  size={35}
-                  style={{color:  'white'}}
-                />
+                <Icon name="heart-sharp" size={35} style={{color: 'white'}} />
               </View>
             ),
           }}
@@ -98,7 +85,7 @@ const Navigations = () => {
                 <Icon
                   name="reorder-three-sharp"
                   size={35}
-                  style={{color:  'white'}}
+                  style={{color: 'white'}}
                 />
               </View>
             ),

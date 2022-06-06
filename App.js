@@ -1,6 +1,6 @@
 import { View, Text,StatusBar } from 'react-native'
 import React from 'react'
-import Navigations from './src/Components/Navigations'
+import Navigations from './src/components/Navigations'
 const App = () => {
   return (
     <View style={{flex:1,backgroundColor:"040C6F"}}>
