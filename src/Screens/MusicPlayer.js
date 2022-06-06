@@ -181,22 +181,24 @@ const MusicPlayer = () => {
         <View>
           <Text style={styles.artist_name}>{trackArtist}</Text>
         </View>
-        <View>
-          <TouchableOpacity
-            onPress={() => {
-              repeatMode();
-            }}>
-            <MaterialCommunityIcons
-              name={`${repeatIcon()}`}
-              size={30}
-              color="red"
-            />
-          </TouchableOpacity>
-        </View>
-        <View>
-          <TouchableOpacity onPress={() => {}}>
-            <Icon name="heart-outline" size={30} color="red" />
-          </TouchableOpacity>
+        <View style={{flexDirection:"row",justifyContent:"space-between",width:"80%"}}>
+          <View>
+            <TouchableOpacity
+              onPress={() => {
+                repeatMode();
+              }}>
+              <MaterialCommunityIcons
+                name={`${repeatIcon()}`}
+                size={35}
+                color="white"
+              />
+            </TouchableOpacity>
+          </View>
+          <View>
+            <TouchableOpacity onPress={() => {}}>
+              <Icon name="heart-outline" size={35} color="white" />
+            </TouchableOpacity>
+          </View>
         </View>
         <View>
           <Slider
@@ -227,7 +229,7 @@ const MusicPlayer = () => {
             <Icon
               name="play-skip-back-outline"
               size={50}
-              color="red"
+              color="white"
               style={{marginTop: 15}}
             />
           </TouchableOpacity>
@@ -242,14 +244,14 @@ const MusicPlayer = () => {
                   : 'play-circle-outline'
               }
               size={80}
-              color="red"
+              color="white"
             />
           </TouchableOpacity>
           <TouchableOpacity onPress={skipForward}>
             <Icon
               name="play-skip-forward-outline"
               size={50}
-              color="red"
+              color="white"
               style={{marginTop: 15}}
             />
           </TouchableOpacity>
@@ -261,7 +263,7 @@ const MusicPlayer = () => {
 const styles = StyleSheet.create({
   main_container: {
     flex: 1,
-    // backgroundColor: 'red',
+    backgroundColor: '#040C6F',
   },
   container: {
     flex: 1,
@@ -271,8 +273,9 @@ const styles = StyleSheet.create({
 
   song_image: {
     width: 300,
-    height: 300,
+    height: 280,
     borderRadius: 10,
+    marginTop: 20,
   },
   img_box: {
     elevation: 5,
@@ -280,10 +283,11 @@ const styles = StyleSheet.create({
   song_name: {
     fontSize: 30,
     margin: 10,
-    color: 'black',
+    color: 'white',
     fontWeight: 'bold',
   },
   artist_name: {
+    color:"white",
     fontSize: 18,
   },
   slider: {
@@ -300,7 +304,7 @@ const styles = StyleSheet.create({
   },
   time_text: {
     fontSize: 15,
-    color: 'black',
+    color: 'white',
     margin: 0,
   },
   music_control: {

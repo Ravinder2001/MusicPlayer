@@ -1,31 +1,13 @@
-import {View, StyleSheet} from 'react-native';
-import React from 'react';
-import MusicPlayer from './src/Screens/MusicPlayer';
-import Search from './src/Screens/Search';
-import {NavigationContainer} from '@react-navigation/native';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import { View, Text,StatusBar } from 'react-native'
+import React from 'react'
+import Navigations from './src/Components/Navigations'
 const App = () => {
-  const Tab = createBottomTabNavigator();
   return (
-    <NavigationContainer>
-      <Tab.Navigator>
-        <Tab.Screen
-          options={{
-            headerShown: false,
-          }}
-          name="MusicPlayer"
-          component={MusicPlayer}
-        />
-        <Tab.Screen
-          options={{
-            headerShown: false,
-          }}
-          name="Search"
-          component={Search}
-        />
-      </Tab.Navigator>
-    </NavigationContainer>
-  );
-};
+    <View style={{flex:1,backgroundColor:"040C6F"}}>
+      <StatusBar backgroundColor="#040C6F" barStyle='light-content'/>
+     <Navigations/>
+    </View>
+  )
+}
 
-export default App;
+export default App
