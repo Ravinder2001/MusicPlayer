@@ -9,9 +9,10 @@ import {
   FlatList,
   Animated,
 } from 'react-native';
+
 import Slider from '@react-native-community/slider';
 import React, {useEffect, useState, useRef} from 'react';
-import songs from '../data';
+// import songs from '../data';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 const {width, height} = Dimensions.get('window');
@@ -24,7 +25,9 @@ import TrackPlayer, {
   useProgress,
   useTrackPlayerEvents,
 } from 'react-native-track-player';
-const setupPlayer = async () => {
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const setupPlayer = async e => {
   try {
     await TrackPlayer.setupPlayer({});
     await TrackPlayer.updateOptions({
@@ -36,7 +39,7 @@ const setupPlayer = async () => {
         // Capability.Stop,
       ],
     });
-    await TrackPlayer.add(songs);
+    await TrackPlayer.add(e);
   } catch (error) {
     console.log(error);
   }
@@ -56,7 +59,7 @@ const togglePlayBack = async playBackState => {
     }
   }
 };
-const MusicPlayer = () => {
+const MusicPlayer = ({navigation}) => {
   const playBackState = usePlaybackState();
   const progress = useProgress();
   const [songIndex, setSongIndex] = useState(0);
@@ -65,6 +68,7 @@ const MusicPlayer = () => {
   const [trackImage, setTrackImage] = useState('');
   const [trackArtist, setTrackArtist] = useState('');
   const [tracktitle, setTrackTitle] = useState('');
+  const [url,setUrl]=useState(null)
   useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
     if (event.type == Event.PlaybackTrackChanged && event.nextTrack != null) {
       const track = await TrackPlayer.getTrack(event.nextTrack);
@@ -103,8 +107,41 @@ const MusicPlayer = () => {
       setRepeat('off');
     }
   };
+
+  async function fetchSong(e) {
+    try {
+      console.log('going');
+      // const [sonsDetail, setSongDetail] = useState(null);
+      
+      const songs = [
+        {
+          id: 1,
+          image:
+            'https://a10.gaanacdn.com/gn_img/song/P7m3GNKqxo/m3GgG19N3q/size_l_1530226074.webp',
+          title: e,
+          artist: 'Diljit Dosanjh',
+          url: "https://aac.saavncdn.com/238/ba005edfedac86b02e41f4a9fa9d215d_320.mp4",
+        },
+      ];
+      setupPlayer(songs);
+      
+      // TrackPlayer.destroy()
+      // setTimeout(async ()=>{
+      //   await TrackPlayer.play();
+      // },500)
+      
+    } catch (err) {
+      console.log(err);
+    }
+  }
   useEffect(() => {
-    setupPlayer();
+    navigation.addListener('focus', async() => {
+      const urls = await AsyncStorage.getItem('song');
+      // setUrl(urls);
+      console.log(urls)
+      fetchSong(urls);
+    });
+
     scrollX.addListener(async ({value}) => {
       const index = Math.round(value / width);
       skipto(index);
@@ -121,7 +158,7 @@ const MusicPlayer = () => {
       scrollX.removeAllListeners();
       // TrackPlayer.destroy();
     };
-  }, []);
+  }, [navigation]);
   const skipForward = () => {
     songSlider.current.scrollToOffset({
       offset: (songIndex + 1) * width,
@@ -157,7 +194,7 @@ const MusicPlayer = () => {
       <View style={styles.container}>
         <Animated.FlatList
           ref={songSlider}
-          data={songs}
+          // data={songs}
           renderItem={renderSongs}
           keyExtractor={item => item.id}
           horizontal
@@ -181,7 +218,12 @@ const MusicPlayer = () => {
         <View>
           <Text style={styles.artist_name}>{trackArtist}</Text>
         </View>
-        <View style={{flexDirection:"row",justifyContent:"space-between",width:"80%"}}>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            width: '80%',
+          }}>
           <View>
             <TouchableOpacity
               onPress={() => {
@@ -287,7 +329,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   artist_name: {
-    color:"white",
+    color: 'white',
     fontSize: 18,
   },
   slider: {

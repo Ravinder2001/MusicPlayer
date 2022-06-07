@@ -7,10 +7,12 @@ import {
   Image,
   ScrollView,
   KeyboardAvoidingView,
+  TouchableOpacity,
 } from 'react-native';
 import React, {useState} from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const Search = () => {
+const Search = ({navigation}) => {
   const [text, setText] = useState('');
   const [data, setData] = useState(null);
   async function songs(text) {
@@ -20,10 +22,19 @@ const Search = () => {
         `https://saavn.me/search/songs?query=${text}&page=1&limit=2`,
       );
       const songArray = await res.json();
-      console.log(songArray.results[0].image[1].link);
+      console.log(songArray.results[0].album);
       setData(songArray.results);
     }
   }
+  const store = async e => {
+    try {
+      await AsyncStorage.setItem('AlbumId', e);
+      console.log('album Stored');
+      navigation.navigate('Playlist');
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
     // <KeyboardAvoidingView>
     <View style={styles.container}>
@@ -38,8 +49,13 @@ const Search = () => {
       />
       {data ? (
         <View>
-          <ScrollView>
-            {data.map(e => (
+          {/* <ScrollView> */}
+          {data.map(e => (
+            <TouchableOpacity
+              key={e.id}
+              onPress={() => {
+                store(e.album.id);
+              }}>
               <View
                 style={{
                   justifyContent: 'space-between',
@@ -47,16 +63,16 @@ const Search = () => {
                   margin: 10,
                   borderWidth: 1,
                   padding: 10,
-                }}
-                key={e.id}>
+                }}>
                 <Image
                   source={{uri: `${e.image[1].link}`}}
                   style={{width: 100, height: 100}}
                 />
                 <Text style={{fontSize: 20, color: 'black'}}>{e.name}</Text>
               </View>
-            ))}
-          </ScrollView>
+            </TouchableOpacity>
+          ))}
+          {/* </ScrollView> */}
         </View>
       ) : null}
     </View>
