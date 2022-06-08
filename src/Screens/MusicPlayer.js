@@ -68,7 +68,7 @@ const MusicPlayer = ({navigation}) => {
   const [trackImage, setTrackImage] = useState('');
   const [trackArtist, setTrackArtist] = useState('');
   const [tracktitle, setTrackTitle] = useState('');
-  const [url,setUrl]=useState(null)
+  const [url, setUrl] = useState(null);
   useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
     if (event.type == Event.PlaybackTrackChanged && event.nextTrack != null) {
       const track = await TrackPlayer.getTrack(event.nextTrack);
@@ -107,39 +107,50 @@ const MusicPlayer = ({navigation}) => {
       setRepeat('off');
     }
   };
-
-  async function fetchSong(e) {
+  const songs = [
+    {
+      id: 1,
+      image:
+        'https://a10.gaanacdn.com/gn_img/song/P7m3GNKqxo/m3GgG19N3q/size_l_1530226074.webp',
+      title: 'raatien',
+      artist: 'Diljit Dosanjh',
+      url: 'https://aac.saavncdn.com/238/ba005edfedac86b02e41f4a9fa9d215d_320.mp4',
+    },
+  ];
+  async function fetchSong() {
     try {
       console.log('going');
+
       // const [sonsDetail, setSongDetail] = useState(null);
-      
+      const urls = await AsyncStorage.getItem('song');
       const songs = [
         {
           id: 1,
           image:
             'https://a10.gaanacdn.com/gn_img/song/P7m3GNKqxo/m3GgG19N3q/size_l_1530226074.webp',
-          title: e,
+          title: 'raatien',
           artist: 'Diljit Dosanjh',
-          url: "https://aac.saavncdn.com/238/ba005edfedac86b02e41f4a9fa9d215d_320.mp4",
+          url: urls,
         },
       ];
-      setupPlayer(songs);
-      
-      // TrackPlayer.destroy()
-      // setTimeout(async ()=>{
-      //   await TrackPlayer.play();
-      // },500)
-      
+      // setupPlayer(songs);
+
+      await TrackPlayer.add(songs);
+      // TrackPlayer.destroy();
+      setTimeout(async () => {
+        await TrackPlayer.play();
+      }, 500);
     } catch (err) {
       console.log(err);
     }
   }
   useEffect(() => {
-    navigation.addListener('focus', async() => {
-      const urls = await AsyncStorage.getItem('song');
+    navigation.addListener('focus', async () => {
+      setupPlayer(songs);
       // setUrl(urls);
-      console.log(urls)
-      fetchSong(urls);
+      await TrackPlayer.reset();
+      console.log('focused');
+      fetchSong();
     });
 
     scrollX.addListener(async ({value}) => {
