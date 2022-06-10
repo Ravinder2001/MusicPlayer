@@ -42,12 +42,15 @@ const Playlist = ({navigation}) => {
             <ScrollView>
               {songs.map(e => (
                 <TouchableOpacity
-                  onPress={async () => {
+                  onPress={() => {
+                    console.log('pressed');
                     const length = e.downloadUrl.length;
                     const song = e.downloadUrl[length - 1].link;
                     const name = e.name;
-                    // console.log(song)
-                    await AsyncStorage.setItem('song', song);
+                    const artist = e.primaryArtists;
+                    const image = e.image[1].link;
+
+                    AsyncStorage.setItem('song', song);
                     console.log('song stored');
                     navigation.navigate('MusicPlayer');
                   }}

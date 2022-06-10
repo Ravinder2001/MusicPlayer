@@ -123,6 +123,8 @@ const MusicPlayer = ({navigation}) => {
 
       // const [sonsDetail, setSongDetail] = useState(null);
       const urls = await AsyncStorage.getItem('song');
+      console.log("urls",urls)
+      
       const songs = [
         {
           id: 1,
@@ -133,10 +135,11 @@ const MusicPlayer = ({navigation}) => {
           url: urls,
         },
       ];
-      // setupPlayer(songs);
+      setupPlayer(songs);
 
       await TrackPlayer.add(songs);
       // TrackPlayer.destroy();
+      
       setTimeout(async () => {
         await TrackPlayer.play();
       }, 500);
@@ -146,6 +149,7 @@ const MusicPlayer = ({navigation}) => {
   }
   useEffect(() => {
     navigation.addListener('focus', async () => {
+      await TrackPlayer.setupPlayer({});
       setupPlayer(songs);
       // setUrl(urls);
       await TrackPlayer.reset();
