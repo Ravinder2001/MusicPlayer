@@ -322,7 +322,7 @@ const MusicPlayer = ({navigation}) => {
 const styles = StyleSheet.create({
   main_container: {
     flex: 1,
-    backgroundColor: '#040C6F',
+    backgroundColor: '#bcccee',
   },
   container: {
     flex: 1,
