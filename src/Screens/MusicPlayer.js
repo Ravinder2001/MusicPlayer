@@ -73,6 +73,7 @@ const MusicPlayer = ({navigation}) => {
     if (event.type == Event.PlaybackTrackChanged && event.nextTrack != null) {
       const track = await TrackPlayer.getTrack(event.nextTrack);
       const {title, image, artist} = track;
+      console.log('image', image);
       setTrackArtist(artist);
       setTrackImage(image);
       setTrackTitle(title);
@@ -107,11 +108,12 @@ const MusicPlayer = ({navigation}) => {
       setRepeat('off');
     }
   };
+  // const image = await AsyncStorage.getItem('image');
   const songs = [
     {
       id: 1,
       image:
-        'https://a10.gaanacdn.com/gn_img/song/P7m3GNKqxo/m3GgG19N3q/size_l_1530226074.webp',
+        'https://c.saavncdn.com/707/Khabbi-Seat-Punjabi-2021-20210403053402-500x500.jpg',
       title: 'raatien',
       artist: 'Diljit Dosanjh',
       url: 'https://aac.saavncdn.com/238/ba005edfedac86b02e41f4a9fa9d215d_320.mp4',
@@ -123,23 +125,24 @@ const MusicPlayer = ({navigation}) => {
 
       // const [sonsDetail, setSongDetail] = useState(null);
       const urls = await AsyncStorage.getItem('song');
-      console.log("urls",urls)
-      
+      const songName = await AsyncStorage.getItem('name');
+      const image = await AsyncStorage.getItem('image');
+      const artist = await AsyncStorage.getItem('artist');
+      console.log('name', image);
       const songs = [
         {
           id: 1,
-          image:
-            'https://a10.gaanacdn.com/gn_img/song/P7m3GNKqxo/m3GgG19N3q/size_l_1530226074.webp',
-          title: 'raatien',
-          artist: 'Diljit Dosanjh',
+          image: image,
+          title: songName,
+          artist: artist,
           url: urls,
         },
       ];
+      await TrackPlayer.reset();
       setupPlayer(songs);
 
       await TrackPlayer.add(songs);
       // TrackPlayer.destroy();
-      
       setTimeout(async () => {
         await TrackPlayer.play();
       }, 500);
@@ -149,10 +152,9 @@ const MusicPlayer = ({navigation}) => {
   }
   useEffect(() => {
     navigation.addListener('focus', async () => {
-      await TrackPlayer.setupPlayer({});
       setupPlayer(songs);
       // setUrl(urls);
-      await TrackPlayer.reset();
+
       console.log('focused');
       fetchSong();
     });
@@ -209,7 +211,7 @@ const MusicPlayer = ({navigation}) => {
       <View style={styles.container}>
         <Animated.FlatList
           ref={songSlider}
-          // data={songs}
+          data={songs}
           renderItem={renderSongs}
           keyExtractor={item => item.id}
           horizontal

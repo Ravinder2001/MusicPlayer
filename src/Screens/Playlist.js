@@ -17,6 +17,7 @@ const Playlist = ({navigation}) => {
   const getAlbum = async () => {
     try {
       const id = await AsyncStorage.getItem('AlbumId');
+      console.log(id);
       const res = await fetch(`https://saavn.me/albums?id=${id}`);
       const albumData = await res.json();
       // console.log(albumData.results);
@@ -42,15 +43,17 @@ const Playlist = ({navigation}) => {
             <ScrollView>
               {songs.map(e => (
                 <TouchableOpacity
-                  onPress={() => {
-                    console.log('pressed');
+                  onPress={async () => {
                     const length = e.downloadUrl.length;
                     const song = e.downloadUrl[length - 1].link;
                     const name = e.name;
+                    const image = e.image[2].link;
                     const artist = e.primaryArtists;
-                    const image = e.image[1].link;
-
-                    AsyncStorage.setItem('song', song);
+                    // console.log(song)
+                    await AsyncStorage.setItem('song', song);
+                    await AsyncStorage.setItem('name', name);
+                    await AsyncStorage.setItem('image', image);
+                    await AsyncStorage.setItem('artist', artist);
                     console.log('song stored');
                     navigation.navigate('MusicPlayer');
                   }}
