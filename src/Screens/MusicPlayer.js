@@ -69,6 +69,7 @@ const MusicPlayer = ({navigation}) => {
   const [trackArtist, setTrackArtist] = useState('');
   const [tracktitle, setTrackTitle] = useState('');
   const [url, setUrl] = useState(null);
+  
   useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
     if (event.type == Event.PlaybackTrackChanged && event.nextTrack != null) {
       const track = await TrackPlayer.getTrack(event.nextTrack);

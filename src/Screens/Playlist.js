@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   ScrollView,
   StyleSheet,
+  FlatList,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -39,35 +40,40 @@ const Playlist = ({navigation}) => {
       <Image style={styles.image} source={{uri: `${albumCover}`}} />
       <View>
         {songs ? (
-          <View>
-            <ScrollView>
-              {songs.map(e => (
-                <TouchableOpacity
-                  onPress={async () => {
-                    const length = e.downloadUrl.length;
-                    const song = e.downloadUrl[length - 1].link;
-                    const name = e.name;
-                    const image = e.image[2].link;
-                    const artist = e.primaryArtists;
-                    // console.log(song)
-                    await AsyncStorage.setItem('song', song);
-                    await AsyncStorage.setItem('name', name);
-                    await AsyncStorage.setItem('image', image);
-                    await AsyncStorage.setItem('artist', artist);
-                    console.log('song stored');
-                    navigation.navigate('MusicPlayer');
-                  }}
-                  key={e.id}>
-                  <View style={styles.box}>
-                    <Image
-                      style={styles.songImage}
-                      source={{uri: `${e.image[0].link}`}}
-                    />
-                    <Text style={styles.songName}>{e.name}</Text>
-                  </View>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
+          <View style={styles.list}>
+            <FlatList
+              style={{flex: 1}}
+              data={songs}
+              renderItem={({item}) => {
+                return (
+                  <TouchableOpacity
+                    onPress={async () => {
+                      const length = item.downloadUrl.length;
+                      const song = item.downloadUrl[length - 1].link;
+                      const name = item.name;
+                      const image = item.image[2].link;
+                      const artist = item.primaryArtists;
+                      // console.log(song)
+                      await AsyncStorage.setItem('song', song);
+                      await AsyncStorage.setItem('name', name);
+                      await AsyncStorage.setItem('image', image);
+                      await AsyncStorage.setItem('artist', artist);
+                      console.log('song stored');
+                      navigation.navigate('MusicPlayer');
+                    }}
+                    key={item.id}>
+                    <View style={styles.box}>
+                      <Image
+                        style={styles.songImage}
+                        source={{uri: `${item.image[0].link}`}}
+                      />
+                      <Text style={styles.songName}>{item.name}</Text>
+                    </View>
+                  </TouchableOpacity>
+                );
+              }}
+              keyExtractor={item => item.id}
+            />
           </View>
         ) : null}
       </View>
@@ -107,6 +113,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginLeft: 20,
     color: 'black',
+  },
+  list: {
+    width: '100%',
+    height:300,
+    padding: 5,
   },
 });
 export default Playlist;

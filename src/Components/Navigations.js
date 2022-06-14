@@ -1,14 +1,18 @@
 import {View, StyleSheet} from 'react-native';
 import React from 'react';
+import {NavigationContainer} from '@react-navigation/native';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import Icon from 'react-native-vector-icons/Ionicons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MusicPlayer from '../Screens/MusicPlayer';
 import Search from '../Screens/Search';
 import Favorite from '../Screens/Favorite';
 import Playlist from '../Screens/Playlist';
 import Settings from '../Screens/Settings';
-import {NavigationContainer} from '@react-navigation/native';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import Icon from 'react-native-vector-icons/Ionicons';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
+
+
+
 const Navigations = () => {
   const Tab = createBottomTabNavigator();
   return (
