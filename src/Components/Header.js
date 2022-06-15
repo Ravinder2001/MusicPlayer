@@ -29,7 +29,7 @@ const Header = ({navigation}) => {
     if (text != '') {
       const res = await fetch(`https://saavn.me/search/songs?query=${text}`);
       const songArray = await res.json();
-      console.log(songArray.results[0].album);
+      // console.log(songArray.results[0].album);
       setData(songArray.results);
     } else {
       setData(null);

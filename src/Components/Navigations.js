@@ -36,6 +36,7 @@ const Navigations = () => {
           }}
           name="Search"
           component={Search}
+        
         />
         <Tab.Screen
           options={{

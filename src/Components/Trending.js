@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-const Trending = ({album, title, skip,navigation}) => {
+const Trending = ({album, title, skip, navigation}) => {
   const store = async e => {
     try {
       await AsyncStorage.setItem('AlbumId', e);
@@ -31,12 +31,15 @@ const Trending = ({album, title, skip,navigation}) => {
         horizontal
         showsHorizontalScrollIndicator={false}
         renderItem={({item}) => {
-          
           if (item.type != skip) {
             return (
               <TouchableOpacity
                 onPress={() => {
-                  store(item.id);
+                  if (skip != '') {
+                    store(item.id);
+                  } else {
+                    alert(`No data found for ${title}`);
+                  }
                 }}>
                 <View style={styles.box}>
                   <Image source={{uri: `${item.image}`}} style={styles.image} />
@@ -46,7 +49,7 @@ const Trending = ({album, title, skip,navigation}) => {
             );
           }
         }}
-        keyExtractor={item => item.id}
+        keyExtractor={(item, index) => index.toString()}
       />
     </View>
   );
