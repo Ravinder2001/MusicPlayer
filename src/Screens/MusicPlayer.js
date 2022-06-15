@@ -144,9 +144,9 @@ const MusicPlayer = ({navigation}) => {
 
       await TrackPlayer.add(songs);
       // TrackPlayer.destroy();
-      setTimeout(async () => {
-        await TrackPlayer.play();
-      }, 500);
+      // setTimeout(async () => {
+      //   await TrackPlayer.play();
+      // }, 500);
     } catch (err) {
       console.log(err);
     }
@@ -323,7 +323,7 @@ const MusicPlayer = ({navigation}) => {
 const styles = StyleSheet.create({
   main_container: {
     flex: 1,
-    backgroundColor: '#bcccee',
+    backgroundColor: '#030A5C',
   },
   container: {
     flex: 1,
