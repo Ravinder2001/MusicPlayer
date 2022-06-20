@@ -15,7 +15,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 const {width, height} = Dimensions.get('window');
 const Playlist = ({navigation}) => {
   const [albums, setAlbums] = useState(null);
-
+  const [songs, setSongs] = useState(null);
   const getAlbum = async () => {
     try {
       const id = await AsyncStorage.getItem('AlbumId');
@@ -24,11 +24,25 @@ const Playlist = ({navigation}) => {
       const albumData = await res.json();
       // console.log(albumData.results);
       setAlbums(albumData.results);
+      const temp = [];
+      for (var i = 0; i < albumData.results.songs.length; i++) {
+        const length = albumData.results.songs[i].downloadUrl.length;
+        temp.push({
+          id: albumData.results.songs[i].id,
+          name: albumData.results.songs[i].name,
+          artist: albumData.results.songs[i].primaryArtists,
+          url: albumData.results.songs[i].downloadUrl[length - 1].link,
+          image: albumData.results.songs[i].image[2].link,
+        });
+      }
+      console.log(temp[1])
+      setSongs(temp);
+      console.log('album', songs);
     } catch (err) {
       console.log('err', err);
     }
   };
-  // console.log('album', albums.image);
+
   useEffect(() => {
     navigation.addListener('focus', () => {
       getAlbum();
@@ -67,19 +81,10 @@ const Playlist = ({navigation}) => {
                       <TouchableOpacity
                         onPress={async () => {
                           // console.log('item', item.downloadUrl);
-                          if(item.downloadUrl==false){
-                            alert("Sorry!! No Data Found.")
+                          if (item.downloadUrl == false) {
+                            alert('Sorry!! No Data Found.');
                           }
-                          const length = item.downloadUrl.length;
-                          const song = item.downloadUrl[length - 1].link;
-                          const name = item.name;
-                          const image = item.image[2].link;
-                          const artist = item.primaryArtists;
-                          // console.log(song)
-                          await AsyncStorage.setItem('song', song);
-                          await AsyncStorage.setItem('name', name);
-                          await AsyncStorage.setItem('image', image);
-                          await AsyncStorage.setItem('artist', artist);
+
                           console.log('song stored');
                           navigation.navigate('MusicPlayer');
                         }}

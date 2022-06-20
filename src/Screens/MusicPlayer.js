@@ -27,38 +27,7 @@ import TrackPlayer, {
 } from 'react-native-track-player';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const setupPlayer = async e => {
-  try {
-    await TrackPlayer.setupPlayer({});
-    await TrackPlayer.updateOptions({
-      capabilities: [
-        Capability.Play,
-        Capability.Pause,
-        Capability.SkipToNext,
-        Capability.SkipToPrevious,
-        // Capability.Stop,
-      ],
-    });
-    await TrackPlayer.add(e);
-  } catch (error) {
-    console.log(error);
-  }
-};
-var count = 0;
-const togglePlayBack = async playBackState => {
-  count++;
-  const currentTrack = await TrackPlayer.getCurrentTrack();
-  console.log('here');
-  if (currentTrack != null) {
-    if (playBackState % 2 == 1) {
-      await TrackPlayer.play();
-    } else if (playBackState % 2 == 0) {
-      await TrackPlayer.pause();
-    } else {
-      await TrackPlayer.pause();
-    }
-  }
-};
+
 const MusicPlayer = ({navigation}) => {
   const playBackState = usePlaybackState();
   const progress = useProgress();
@@ -68,8 +37,40 @@ const MusicPlayer = ({navigation}) => {
   const [trackImage, setTrackImage] = useState('');
   const [trackArtist, setTrackArtist] = useState('');
   const [tracktitle, setTrackTitle] = useState('');
-  const [url, setUrl] = useState(null);
-  
+  const [counts, setCounts] = useState(0);
+  const [albums, setAlbums] = useState(null);
+  const setupPlayer = async e => {
+    try {
+      await TrackPlayer.setupPlayer({});
+      await TrackPlayer.updateOptions({
+        capabilities: [
+          Capability.Play,
+          Capability.Pause,
+          Capability.SkipToNext,
+          Capability.SkipToPrevious,
+          // Capability.Stop,
+        ],
+      });
+      await TrackPlayer.add(e);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  var count = 0;
+  const togglePlayBack = async playBackState => {
+    count++;
+    const currentTrack = await TrackPlayer.getCurrentTrack();
+    console.log('here');
+    if (currentTrack != null) {
+      if (playBackState % 2 == 1) {
+        await TrackPlayer.play();
+      } else if (playBackState % 2 == 0) {
+        await TrackPlayer.pause();
+      } else {
+        await TrackPlayer.pause();
+      }
+    }
+  };
   useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
     if (event.type == Event.PlaybackTrackChanged && event.nextTrack != null) {
       const track = await TrackPlayer.getTrack(event.nextTrack);
@@ -119,6 +120,22 @@ const MusicPlayer = ({navigation}) => {
       artist: 'Diljit Dosanjh',
       url: 'https://aac.saavncdn.com/238/ba005edfedac86b02e41f4a9fa9d215d_320.mp4',
     },
+    {
+      id: 2,
+      image:
+        'https://a10.gaanacdn.com/gn_img/albums/BZgWoOW2d9/gWoQNXwaK2/size_m.jpg',
+      title: 'raatien',
+      artist: 'Diljit Dosanjh',
+      url: 'https://aac.saavncdn.com/238/ba005edfedac86b02e41f4a9fa9d215d_320.mp4',
+    },
+    {
+      id: 3,
+      image:
+        'https://a10.gaanacdn.com/gn_img/albums/qa4WEkqKP1/4WEk1w1gKP/size_m.jpg',
+      title: 'raatien',
+      artist: 'Diljit Dosanjh',
+      url: 'https://aac.saavncdn.com/238/ba005edfedac86b02e41f4a9fa9d215d_320.mp4',
+    },
   ];
   async function fetchSong() {
     try {
@@ -151,9 +168,23 @@ const MusicPlayer = ({navigation}) => {
       console.log(err);
     }
   }
+  const getAlbum = async () => {
+    try {
+      const id = await AsyncStorage.getItem('AlbumId');
+      console.log(id);
+      const res = await fetch(`https://saavn.me/albums?id=${id}`);
+      const albumData = await res.json();
+      console.log(albumData.results);
+      setAlbums(albumData.results.songs);
+    } catch (err) {
+      console.log('err', err);
+    }
+  };
   useEffect(() => {
     navigation.addListener('focus', async () => {
-      setupPlayer(songs);
+      getAlbum();
+      
+      setupPlayer(al);
       // setUrl(urls);
 
       console.log('focused');
