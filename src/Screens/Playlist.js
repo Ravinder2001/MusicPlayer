@@ -33,21 +33,23 @@ const Playlist = ({navigation}) => {
           artist: albumData.results.songs[i].primaryArtists,
           url: albumData.results.songs[i].downloadUrl[length - 1].link,
           image: albumData.results.songs[i].image[2].link,
+          artist: albumData.results.songs[i].primaryArtists,
         });
       }
-      console.log(temp[1])
+      console.log(temp[1]);
       setSongs(temp);
-      console.log('album', songs);
     } catch (err) {
       console.log('err', err);
     }
   };
-
   useEffect(() => {
     navigation.addListener('focus', () => {
       getAlbum();
     });
   }, [navigation]);
+  // if (songs) {
+  //   console.log('album', songs[0]);
+  // }
 
   return (
     <View style={styles.container}>
@@ -76,7 +78,7 @@ const Playlist = ({navigation}) => {
                 <FlatList
                   style={{flex: 1}}
                   data={albums.songs}
-                  renderItem={({item}) => {
+                  renderItem={({item, index}) => {
                     return (
                       <TouchableOpacity
                         onPress={async () => {
@@ -85,8 +87,11 @@ const Playlist = ({navigation}) => {
                             alert('Sorry!! No Data Found.');
                           }
 
-                          console.log('song stored');
-                          navigation.navigate('MusicPlayer');
+                          // console.log('song stored',index);
+                          navigation.navigate('MusicPlayer', {
+                            currentIndex: index,
+                            music: songs,
+                          });
                         }}
                         key={item.id}>
                         <View style={styles.box}>
