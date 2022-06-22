@@ -33,7 +33,6 @@ const Playlist = ({navigation}) => {
           artist: albumData.results.songs[i].primaryArtists,
           url: albumData.results.songs[i].downloadUrl[length - 1].link,
           image: albumData.results.songs[i].image[2].link,
-          artist: albumData.results.songs[i].primaryArtists,
         });
       }
       console.log(temp[1]);

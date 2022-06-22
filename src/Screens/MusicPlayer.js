@@ -27,8 +27,9 @@ import TrackPlayer, {
 } from 'react-native-track-player';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-
-const MusicPlayer = ({navigation}) => {
+const MusicPlayer = ({navigation, route}) => {
+  var {currentIndex, music} = route.params;
+  console.log(music[currentIndex].name)
   const playBackState = usePlaybackState();
   const progress = useProgress();
   const [songIndex, setSongIndex] = useState(0);
@@ -37,21 +38,19 @@ const MusicPlayer = ({navigation}) => {
   const [trackImage, setTrackImage] = useState('');
   const [trackArtist, setTrackArtist] = useState('');
   const [tracktitle, setTrackTitle] = useState('');
-  const [counts, setCounts] = useState(0);
-  const [albums, setAlbums] = useState(null);
-  const setupPlayer = async e => {
+  const setupPlayer = async () => {
     try {
-      await TrackPlayer.setupPlayer({});
-      await TrackPlayer.updateOptions({
-        capabilities: [
-          Capability.Play,
-          Capability.Pause,
-          Capability.SkipToNext,
-          Capability.SkipToPrevious,
-          // Capability.Stop,
-        ],
+      await TrackPlayer.setupPlayer();
+
+      // After the track player has been set up, we can add to our playlist
+      await TrackPlayer.add({
+        id: music[currentIndex].id,
+        url: music[currentIndex].url,
+        title: music[currentIndex].name,
+        image: music[currentIndex].image,
+        artist: music[currentIndex].artist,
       });
-      await TrackPlayer.add(e);
+      return true;
     } catch (error) {
       console.log(error);
     }
@@ -110,86 +109,11 @@ const MusicPlayer = ({navigation}) => {
       setRepeat('off');
     }
   };
-  // const image = await AsyncStorage.getItem('image');
-  const songs = [
-    {
-      id: 1,
-      image:
-        'https://c.saavncdn.com/707/Khabbi-Seat-Punjabi-2021-20210403053402-500x500.jpg',
-      title: 'raatien',
-      artist: 'Diljit Dosanjh',
-      url: 'https://aac.saavncdn.com/238/ba005edfedac86b02e41f4a9fa9d215d_320.mp4',
-    },
-    {
-      id: 2,
-      image:
-        'https://a10.gaanacdn.com/gn_img/albums/BZgWoOW2d9/gWoQNXwaK2/size_m.jpg',
-      title: 'raatien',
-      artist: 'Diljit Dosanjh',
-      url: 'https://aac.saavncdn.com/238/ba005edfedac86b02e41f4a9fa9d215d_320.mp4',
-    },
-    {
-      id: 3,
-      image:
-        'https://a10.gaanacdn.com/gn_img/albums/qa4WEkqKP1/4WEk1w1gKP/size_m.jpg',
-      title: 'raatien',
-      artist: 'Diljit Dosanjh',
-      url: 'https://aac.saavncdn.com/238/ba005edfedac86b02e41f4a9fa9d215d_320.mp4',
-    },
-  ];
-  async function fetchSong() {
-    try {
-      console.log('going');
 
-      // const [sonsDetail, setSongDetail] = useState(null);
-      const urls = await AsyncStorage.getItem('song');
-      const songName = await AsyncStorage.getItem('name');
-      const image = await AsyncStorage.getItem('image');
-      const artist = await AsyncStorage.getItem('artist');
-      console.log('name', image);
-      const songs = [
-        {
-          id: 1,
-          image: image,
-          title: songName,
-          artist: artist,
-          url: urls,
-        },
-      ];
-      await TrackPlayer.reset();
-      setupPlayer(songs);
-
-      await TrackPlayer.add(songs);
-      // TrackPlayer.destroy();
-      // setTimeout(async () => {
-      //   await TrackPlayer.play();
-      // }, 500);
-    } catch (err) {
-      console.log(err);
-    }
-  }
-  const getAlbum = async () => {
-    try {
-      const id = await AsyncStorage.getItem('AlbumId');
-      console.log(id);
-      const res = await fetch(`https://saavn.me/albums?id=${id}`);
-      const albumData = await res.json();
-      console.log(albumData.results);
-      setAlbums(albumData.results.songs);
-    } catch (err) {
-      console.log('err', err);
-    }
-  };
   useEffect(() => {
-    navigation.addListener('focus', async () => {
-      getAlbum();
-      
-      setupPlayer(al);
-      // setUrl(urls);
-
-      console.log('focused');
-      fetchSong();
-    });
+    // navigation.addListener('focus', async () => {
+    setupPlayer();
+    // });
 
     scrollX.addListener(async ({value}) => {
       const index = Math.round(value / width);
@@ -243,7 +167,7 @@ const MusicPlayer = ({navigation}) => {
       <View style={styles.container}>
         <Animated.FlatList
           ref={songSlider}
-          data={songs}
+          data={music}
           renderItem={renderSongs}
           keyExtractor={item => item.id}
           horizontal
